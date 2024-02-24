@@ -2,6 +2,7 @@
 
 import subprocess
 import json
+import os
 
 
 # sets the last part of ipv4 to zero
@@ -27,25 +28,22 @@ def remove_suffix(addr):
 
 
 # build conf command from nodes_config.json
-def build_node_init_cmd(interfaces):
+def build_ip_init_cmd(interfaces):
 
     cmd_lines = []
-    cmd_lines.append('conf')
-
     for name, addr in interfaces.items():
-        cmd_lines.append(f'int {name}')
+        cmd_lines.append(f'interface {name}')
         cmd_lines.append(f'ip address {addr}')
+        cmd_lines.append('exit')
+        cmd_lines.append('!')
     
-    cmd_lines.append('do wr')
-    return '\n'.join(cmd_lines) + '\n'
+    return cmd_lines
 
 
 # build conf command from rouring_config.json
 def build_routing_cmd(rules, nodes_def):
 
     cmd_lines = []
-    cmd_lines.append('conf')
-
     for path in rules:
         hop_name = path['hop'][0]
         hop_int  = path['hop'][1]
@@ -64,8 +62,8 @@ def build_routing_cmd(rules, nodes_def):
 
             cmd_lines.append(f'ip route {dst_addr} {hop_addr} {path["int"]}')
 
-    cmd_lines.append('do wr')
-    return '\n'.join(cmd_lines) + '\n'
+    cmd_lines.append('!')
+    return cmd_lines
 
 
 
@@ -91,35 +89,40 @@ def main():
         print(e)
         exit(1)
 
-    # Init static IP address
+    # generate conf files
     try:
 
         for name, description in nodes_def.items():
-            print(f'Init {name} ...')
-            init_cmd = build_node_init_cmd(description['interfaces'])
-            # subprocess.run(['sudo', 'docker', 'exec', '-it', description['container'], 'vtysh', '-c', init_cmd])
+            routing_rules = routings[name]
+            print(f'Generating config for {name} ...')
+
+            f_lines = [
+                'frr version 8.4_git',
+                'frr defaults traditional',
+                f'hostname {name}',
+                'no ipv6 forwarding',
+                # 'service integrated-vtysh-config',
+            ]
+
+            f_lines.append('!')
+            f_lines += build_routing_cmd(routing_rules, nodes_def)
+            f_lines += build_ip_init_cmd(description['interfaces'])
+
+            f_body = '\n'.join(f_lines)
+            f_path = os.path.join(name, 'frr.conf')
+            if not os.path.exists(name):
+                os.mkdir
+            with open(f_path, 'w') as f:
+                f.write(f_body)
+            
             print('Done\n')
 
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
 
-        print('Failed to init static IPs!')
-
-    # Init static routings
-    try:
-
-        for name, rules in routings.items():
-            print(f'Init routing for {name} ...')
-            container = nodes_def[name]['container']
-            routing_cmd = build_routing_cmd(rules, nodes_def)
-            # subprocess.run(['sudo', 'docker', 'exec', '-it', container, 'vtysh', '-c', routing_cmd])
-            print('Done\n')
-
-    except subprocess.CalledProcessError as e:
-
-        print('Failed to init static routings!')
-
+        print('Failed to generate conf files!')
+        print(e)
+    
 
 
 if __name__ == '__main__': main()
-
 
