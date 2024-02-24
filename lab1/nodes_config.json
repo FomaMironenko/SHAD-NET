@@ -1,0 +1,47 @@
+{
+    "router1":{
+        "container": "clab-frrlab1_1-router1",
+        "interfaces": {
+            "lo": "10.10.10.1/32",
+            "eth1": "192.168.1.1/24",
+            "eth2": "192.168.2.1/24",
+            "eth3": "192.168.11.1/24"
+        }
+    },
+    "router2": {
+        "container": "clab-frrlab1_1-router2",
+        "interfaces": {
+            "lo": "10.10.10.2/32",
+            "eth1": "192.168.1.2/24",
+            "eth2": "192.168.3.2/24",
+            "eth3": "192.168.22.2/24"
+        }
+    },
+    "router3": {
+        "container": "clab-frrlab1_1-router3",
+        "interfaces": {
+            "lo": "10.10.10.3/32",
+            "eth1": "192.168.2.3/24",
+            "eth2": "192.168.3.3/24",
+            "eth3": "192.168.33.3/24"
+        }
+    },
+    "PC1": {
+        "container": "clab-frrlab1_1-PC1",
+        "interfaces": {
+            "eth1": "192.168.11.4/24"
+        }
+    },
+    "PC2": {
+        "container": "clab-frrlab1_1-PC2",
+        "interfaces": {
+            "eth1": "192.168.22.4/24"
+        }
+    },
+    "PC3": {
+        "container": "clab-frrlab1_1-PC3",
+        "interfaces": {
+            "eth1": "192.168.33.4/24"
+        }
+    }
+}

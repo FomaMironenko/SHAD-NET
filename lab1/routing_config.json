@@ -1,0 +1,89 @@
+{
+    "router1": [
+        {
+            "int": "eth1",
+            "hop": ["router2", "eth1"],
+            "dst": [
+                ["router2", "lo", false],
+                ["PC2", "eth1", true]
+            ]
+        },
+        {
+            "int": "eth2",
+            "hop": ["router3", "eth1"],
+            "dst": [
+                ["router3", "lo", false],
+                ["PC3", "eth1", true]
+            ]
+        }
+    ],
+    "router2": [
+        {
+            "int": "eth1",
+            "hop": ["router1", "eth1"],
+            "dst": [
+                ["router1", "lo", false],
+                ["PC1", "eth1", true]
+            ]
+        },
+        {
+            "int": "eth2",
+            "hop": ["router3", "eth2"],
+            "dst": [
+                ["router3", "lo", false],
+                ["PC3", "eth1", true]
+            ]
+        }
+    ],
+    "router3": [
+        {
+            "int": "eth1",
+            "hop": ["router1", "eth2"],
+            "dst": [
+                ["router1", "lo", false],
+                ["PC1", "eth1", true]
+            ]
+        },
+        {
+            "int": "eth2",
+            "hop": ["router2", "eth2"],
+            "dst": [
+                ["router2", "lo", false],
+                ["PC2", "eth1", true]
+            ]
+        }
+    ],
+    "PC1": [
+        {
+            "int": "eth1",
+            "hop": ["router1", "eth3"],
+            "dst": [
+                ["router1", "lo", true],
+                ["router2", "eth3", true],
+                ["router3", "eth3", true]
+            ]
+        }
+    ],
+    "PC2": [
+        {
+            "int": "eth1",
+            "hop": ["router2", "eth3"],
+            "dst": [
+                ["router2", "lo", true],
+                ["router1", "eth3", true],
+                ["router3", "eth3", true]
+            ]
+        }
+    ],
+    "PC3": [
+        {
+            "int": "eth1",
+            "hop": ["router3", "eth3"],
+            "dst": [
+                ["router3", "lo", true],
+                ["router1", "eth3", true],
+                ["router2", "eth3", true]
+            ]
+        }
+    ]
+}
