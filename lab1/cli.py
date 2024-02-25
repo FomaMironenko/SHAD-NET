@@ -93,14 +93,14 @@ def run_help(args):
     {', '.join(nodes_def.keys())}
 
     Available commands:
+    - help
+    - exit
     - docker ps
     - at [hostname] sh run
     - at [hostname] sh ip route
     - at [hostname] sh int brief
     - at [hostname] ping x.x.x.x
     - at [hostname] traceroute x.x.x.x
-    - help
-    - exit
     ''')
 
 
